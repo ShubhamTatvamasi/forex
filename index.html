@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RemitNow Forex Calculator</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <h1>RemitNow Forex Charges Calculator</h1>
+    <p class="subtitle">Estimate the total cost of an outward foreign remittance — exchange markup, commission, GST and TCS — modelled on HDFC Bank's RemitNow fee structure.</p>
+  </header>
+
+  <main class="layout">
+
+    <section class="card form-card">
+      <h2>Remittance Details</h2>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="fcyAmount">Foreign currency amount</label>
+          <input type="number" id="fcyAmount" min="0" step="0.01" value="500" />
+        </div>
+        <div class="field">
+          <label for="currency">Currency</label>
+          <select id="currency"></select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="baseRate">Mid-market / base rate (1 unit → INR)</label>
+          <input type="number" id="baseRate" min="0" step="0.0001" value="96.30" />
+        </div>
+        <div class="field">
+          <label for="markup">Exchange rate markup (₹ per unit)</label>
+          <input type="number" id="markup" min="0" step="0.01" value="0.2" />
+          <p class="hint">Commission slab boundary (USD 500) is converted to INR using an indicative rate of ₹83.5/USD for non-USD currencies.</p>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="purpose">Purpose of remittance</label>
+          <select id="purpose">
+            <option value="education_loan">Education (funded by loan)</option>
+            <option value="education_medical">Education (self-funded) / Medical treatment</option>
+            <option value="other" selected>Other (gift, travel, investment, maintenance, etc.)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="priorLrs">LRS remittances already made this FY (₹)</label>
+          <input type="number" id="priorLrs" min="0" step="1000" value="0" />
+          <p class="hint">Used to check the ₹10,00,000 TCS threshold, which applies per financial year across all LRS remittances, not per transaction.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="card result-card" id="resultCard" hidden>
+      <h2>Breakdown</h2>
+
+      <div class="result-hero">
+        <div class="hero-item">
+          <span class="hero-label">Amount of Currency Exchanged (ACE)</span>
+          <span class="hero-value" id="aceValue">₹0.00</span>
+        </div>
+        <div class="hero-item total">
+          <span class="hero-label">Total payable (debit to account)</span>
+          <span class="hero-value" id="totalValue">₹0.00</span>
+        </div>
+      </div>
+
+      <table class="breakdown-table">
+        <tbody id="breakdownBody"></tbody>
+      </table>
+
+      <p class="disclaimer" id="thresholdNote"></p>
+    </section>
+
+  </main>
+
+  <section class="card info-card">
+    <h2>How this is calculated</h2>
+    <ol class="method-list">
+      <li><strong>Effective rate</strong> = base rate + markup (₹ per unit of currency). This is the rate actually applied, versus the interbank/mid-market rate you enter — confirmed against an actual FX-Retail trade: a trade price of ₹96.30/USD plus a ₹0.20 markup gave a final price of ₹96.50/USD.</li>
+      <li><strong>ACE (Amount of Currency Exchanged)</strong> = foreign currency amount × effective rate. This is the INR value of the currency being bought, and the base on which GST slabs are computed.</li>
+      <li><strong>Commission</strong>: a flat fee of ₹500 for remittances up to USD 500 (or equivalent), or ₹1,000 above that, plus 18% GST on the commission. Confirmed against an actual FX-Retail/CRED trade: a USD 500 purchase was charged a flat ₹500 commission (not a percentage of ACE), with ₹45 CGST + ₹45 SGST (18% total) on top.</li>
+      <li><strong>GST on ACE</strong> follows CGST Rule 32(2)(b), which taxes a "value of supply" slab rather than the full ACE:
+        <ul>
+          <li>Up to ₹1,00,000 → 1% of ACE, minimum ₹250</li>
+          <li>₹1,00,001–₹10,00,000 → ₹1,000 + 0.5% of ACE above ₹1,00,000</li>
+          <li>Above ₹10,00,000 → ₹5,500 + 0.1% of ACE above ₹10,00,000, capped at a value of supply of ₹60,000</li>
+        </ul>
+        18% GST is then charged on that value of supply. Confirmed against the same trade: ACE of ₹48,250 gives a value of supply of ₹482.50 (1% of ACE), and 18% of that is ₹86.85 — matching the ₹43.43 CGST + ₹43.43 SGST actually charged.
+        <br /><br />
+        <strong>Important:</strong> the "value of supply" (₹482.50 in this example) is <em>not</em> a fee you are charged — it never appears as a debit on its own. It is a notional figure that GST law uses purely as the tax base, so that GST isn't calculated on the entire ACE (which would make the tax bill roughly 100× larger). The only real debit from this slab is the GST on it (CGST + SGST). This rule is the same across all banks and forex platforms — it has nothing to do with which platform (e.g. RemitNow, FX-Retail, CRED) you transacted through.
+      </li>
+      <li><strong>TCS (Tax Collected at Source)</strong> under LRS, applied to cumulative remittances in the financial year (post Budget 2025 rates, effective 1 Apr 2025):
+        <ul>
+          <li>Education funded by a specified loan: 0%, no threshold</li>
+          <li>Education (self-funded) / medical treatment: nil up to ₹10 lakh, 2% above (assumes a linked/operative PAN — the rate rises to 5% if your PAN is inoperative)</li>
+          <li>All other purposes (travel, gifts, investments, maintenance, etc.): nil up to ₹10 lakh, 20% above, regardless of PAN status</li>
+        </ul>
+        TCS is not a bank charge — it is deposited with the government against your PAN and can be claimed as a credit / refund when filing your income tax return.
+      </li>
+    </ol>
+    <p class="disclaimer">
+      This is an independent educational estimator, not an official HDFC Bank tool. Actual charges also include correspondent/intermediary bank fees that vary by route and are not known in advance. Rates, slabs and thresholds are subject to change — always confirm current charges with your bank before remitting.
+    </p>
+  </section>
+
+  <footer class="footer">
+    <span>Static, client-side calculator. No data leaves your browser.</span>
+  </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
