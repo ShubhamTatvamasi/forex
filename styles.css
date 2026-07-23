@@ -58,6 +58,11 @@
 
 * { box-sizing: border-box; }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -70,6 +75,10 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   padding: 32px 32px 64px;
+}
+
+@media (max-width: 640px) {
+  .page { padding: 20px 16px 40px; }
 }
 
 .header h1 {
@@ -250,7 +259,11 @@ input:focus, select:focus {
   color: var(--text-muted);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .field-row { grid-template-columns: 1fr; }
   .result-hero { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.35rem; }
+  .card { padding: 18px 16px 20px; }
+  .hero-value { font-size: 1.1rem; }
+  .breakdown-table { font-size: 0.85rem; }
 }
