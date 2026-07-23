@@ -10,7 +10,7 @@ const COMMISSION_HIGH = 1000; // INR, above that
 // Indicative USD/INR rate used only to translate the "USD 500 or equivalent"
 // commission slab boundary into INR when the user is remitting in a
 // non-USD currency. This does not affect the ACE or any other calculation.
-const INDICATIVE_USD_INR = 83.5;
+const INDICATIVE_USD_INR = 96.3;
 const COMMISSION_SLAB_BOUNDARY_INR = 500 * INDICATIVE_USD_INR;
 const CGST_RATE = 0.09;
 const SGST_RATE = 0.09;
