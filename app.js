@@ -77,6 +77,20 @@ function valueOfSupply(ace) {
   return Math.min(uncapped, 60000);
 }
 
+// The GST slab that applies to a given ACE, expressed the way the HDFC
+// RemitNow page presents it: total GST (CGST + SGST = 18% of value of supply)
+// as a percentage of the amount exchanged, with the published min/max caps.
+// 0.18% = 18% x 1%, 0.09% = 18% x 0.5%, 0.018% = 18% x 0.1%.
+function gstSlab(ace) {
+  if (ace <= 100000) {
+    return { rateLabel: "0.18% of ACE", minGst: 45, maxGst: 180 };
+  }
+  if (ace <= 1000000) {
+    return { rateLabel: "₹180 + 0.09% of ACE", minGst: 180, maxGst: 990 };
+  }
+  return { rateLabel: "₹990 + 0.018% of ACE", minGst: 990, maxGst: 10800 };
+}
+
 function tcsRate(purpose, panStatus, amountAboveThreshold) {
   if (amountAboveThreshold <= 0) return 0;
   if (purpose === "education_loan") return 0;
@@ -129,6 +143,11 @@ function calculate() {
   const supplyValue = valueOfSupply(ace);
   const cgstOnAce = supplyValue * CGST_RATE;
   const sgstOnAce = supplyValue * SGST_RATE;
+  const totalGstOnAce = cgstOnAce + sgstOnAce;
+  const slab = gstSlab(ace);
+  // Effective GST as a % of the amount exchanged, matching how the HDFC page
+  // expresses its slab rates.
+  const effectiveGstPct = ace > 0 ? (totalGstOnAce / ace) * 100 : 0;
 
   const cumulativeBefore = priorLrs;
   const cumulativeAfter = priorLrs + ace;
@@ -175,6 +194,11 @@ function calculate() {
     supplyValue,
     cgstOnAce,
     sgstOnAce,
+    totalGstOnAce,
+    gstRateLabel: slab.rateLabel,
+    gstMin: slab.minGst,
+    gstMax: slab.maxGst,
+    effectiveGstPct,
     taxableForTcs,
     tcsRatePct: rate * 100,
     tcs,
@@ -214,9 +238,11 @@ function renderResult(r) {
     row("SGST on commission (9%)", formatINR(r.sgstOnCommission)),
 
     row("GST on Amount of Currency Exchanged", "", { section: true }),
+    row(`Applicable GST slab: ${r.gstRateLabel} (min ₹${r.gstMin}, max ₹${r.gstMax.toLocaleString("en-IN")})`, "", { note: true }),
     row("Value of supply (tax base only — not a charge)", formatINR(r.supplyValue), { note: true }),
     row("CGST on value of supply (9%)", formatINR(r.cgstOnAce)),
     row("SGST on value of supply (9%)", formatINR(r.sgstOnAce)),
+    row(`Total GST on ACE (effective ${r.effectiveGstPct.toFixed(3)}% of ACE)`, formatINR(r.totalGstOnAce)),
 
     row("Tax Collected at Source", "", { section: true }),
     row(
