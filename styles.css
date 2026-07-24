@@ -152,6 +152,52 @@ input:focus, select:focus {
   outline-offset: 1px;
 }
 
+.stepper {
+  position: relative;
+  display: flex;
+}
+
+.stepper input {
+  padding-right: 28px;
+}
+
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepper input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.stepper-buttons {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  width: 20px;
+}
+
+.stepper-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.55rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+}
+
+.stepper-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .hint {
   font-size: 0.78rem;
   color: var(--text-muted);

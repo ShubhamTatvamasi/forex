@@ -5,6 +5,19 @@ const CURRENCIES = [
   "USD", "GBP", "EUR", "AUD", "CAD", "SGD", "AED", "JPY", "CHF", "NZD"
 ];
 
+const CURRENCY_SYMBOLS = {
+  USD: "$",
+  GBP: "£",
+  EUR: "€",
+  AUD: "$",
+  CAD: "$",
+  SGD: "$",
+  AED: "د.إ",
+  JPY: "¥",
+  CHF: "Fr",
+  NZD: "$",
+};
+
 const COMMISSION_LOW = 500;   // INR, for remittances up to USD 500 or equivalent
 const COMMISSION_HIGH = 1000; // INR, above that
 // Indicative USD/INR rate used only to translate the "USD 500 or equivalent"
@@ -31,7 +44,7 @@ const CORRESPONDENT_CHARGE_HINTS = {
 function populateCurrencies() {
   const select = document.getElementById("currency");
   select.innerHTML = CURRENCIES
-    .map((c) => `<option value="${c}">${c}</option>`)
+    .map((c) => `<option value="${c}">${c} (${CURRENCY_SYMBOLS[c]})</option>`)
     .join("");
 }
 
@@ -256,7 +269,12 @@ const INPUT_IDS = [
   "correspondentCharge",
 ];
 
-const TWO_DECIMAL_IDS = ["baseRate", "markup"];
+const STEPPER_DECIMALS = {
+  fcyAmount: 2,
+  baseRate: 2,
+  markup: 2,
+  priorLrs: 0,
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   populateCurrencies();
@@ -265,17 +283,33 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("input", calculate);
     el.addEventListener("change", calculate);
   });
-  TWO_DECIMAL_IDS.forEach((id) => {
+  Object.keys(STEPPER_DECIMALS).forEach((id) => {
     const el = document.getElementById(id);
+    const decimals = STEPPER_DECIMALS[id];
     const reformat = () => {
       const value = parseFloat(el.value);
-      if (!isNaN(value)) el.value = value.toFixed(2);
+      if (!isNaN(value)) el.value = value.toFixed(decimals);
+    };
+    const step = (dir) => {
+      const stepSize = parseFloat(el.step) || 1;
+      const current = parseFloat(el.value) || 0;
+      const next = dir === "up" ? current + stepSize : current - stepSize;
+      const min = parseFloat(el.min);
+      const clamped = !isNaN(min) && next < min ? min : next;
+      el.value = clamped.toFixed(decimals);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
     };
     el.addEventListener("blur", reformat);
     el.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        setTimeout(reformat, 0);
-      }
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      e.preventDefault();
+      step(e.key === "ArrowUp" ? "up" : "down");
+    });
+    document.querySelectorAll(`.stepper-btn[data-step-target="${id}"]`).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        el.focus();
+        step(btn.dataset.stepDir);
+      });
     });
     reformat();
   });
