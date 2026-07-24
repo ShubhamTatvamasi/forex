@@ -256,12 +256,22 @@ const INPUT_IDS = [
   "correspondentCharge",
 ];
 
+const TWO_DECIMAL_IDS = ["baseRate", "markup"];
+
 document.addEventListener("DOMContentLoaded", () => {
   populateCurrencies();
   INPUT_IDS.forEach((id) => {
     const el = document.getElementById(id);
     el.addEventListener("input", calculate);
     el.addEventListener("change", calculate);
+  });
+  TWO_DECIMAL_IDS.forEach((id) => {
+    const el = document.getElementById(id);
+    el.addEventListener("blur", () => {
+      const value = parseFloat(el.value);
+      if (!isNaN(value)) el.value = value.toFixed(2);
+    });
+    el.value = parseFloat(el.value).toFixed(2);
   });
   calculate();
 });
