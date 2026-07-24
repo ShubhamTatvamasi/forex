@@ -16,6 +16,7 @@ const CGST_RATE = 0.09;
 const SGST_RATE = 0.09;
 
 const LRS_TCS_THRESHOLD = 1000000; // Rs 10,00,000 per financial year
+const LRS_ANNUAL_LIMIT_USD = 250000; // USD 2,50,000 per financial year, hard LRS cap
 
 // Full Value is available for remittances in these currencies, to any
 // destination, for all personal purposes offered under RemitNow.
@@ -128,6 +129,16 @@ function calculate() {
   const rate = tcsRate(purpose, taxableForTcs);
   const tcs = taxableForTcs * rate;
 
+  // LRS annual cap is denominated in USD; convert the cumulative INR total
+  // using the indicative USD/INR rate so it can be compared against it.
+  const cumulativeAfterUsd = cumulativeAfter / INDICATIVE_USD_INR;
+  const lrsUsdRemaining = LRS_ANNUAL_LIMIT_USD - cumulativeAfterUsd;
+
+  // Commission slab nudge: only meaningful for a USD remittance sitting just
+  // above the $500 boundary, where a small reduction would halve the commission.
+  const commissionSlabGapUsd =
+    currency === "USD" && fcyAmount > 500 ? fcyAmount - 500 : null;
+
   // Sum the rounded line items (not the raw pre-rounding values) so the
   // displayed subtotal matches what the individual rows actually show.
   const totalCharges =
@@ -157,6 +168,9 @@ function calculate() {
     totalPayable,
     cumulativeAfter,
     purpose,
+    cumulativeAfterUsd,
+    lrsUsdRemaining,
+    commissionSlabGapUsd,
   });
 }
 
@@ -206,7 +220,27 @@ function renderResult(r) {
   if (r.cumulativeAfter > LRS_TCS_THRESHOLD) {
     note.textContent = `Cumulative LRS remittances this financial year (including this transaction) reach ${formatINR(r.cumulativeAfter)}, which is above the ₹10,00,000 TCS threshold. TCS is recoverable — you can claim it as a credit against your income tax liability, or as a refund when filing your return.`;
   } else {
-    note.textContent = `Cumulative LRS remittances this financial year (including this transaction) total ${formatINR(r.cumulativeAfter)}, within the ₹10,00,000 threshold, so no TCS applies yet.`;
+    const headroom = LRS_TCS_THRESHOLD - r.cumulativeAfter;
+    note.textContent = `Cumulative LRS remittances this financial year (including this transaction) total ${formatINR(r.cumulativeAfter)}, within the ₹10,00,000 threshold, so no TCS applies yet. Headroom remaining this FY: ${formatINR(headroom)} — any further LRS remittance this financial year above that amount will trigger TCS on the excess (informational only, not tax advice).`;
+  }
+
+  const lrsLimitNote = document.getElementById("lrsLimitNote");
+  if (r.cumulativeAfterUsd > LRS_ANNUAL_LIMIT_USD) {
+    lrsLimitNote.textContent = `This transaction takes your FY LRS total to an estimated $${r.cumulativeAfterUsd.toFixed(0)} — above the USD ${LRS_ANNUAL_LIMIT_USD.toLocaleString("en-US")} Liberalised Remittance Scheme annual cap. This is a hard regulatory limit (not just a tax threshold); remittances beyond it are not permitted this financial year without RBI approval.`;
+    lrsLimitNote.hidden = false;
+  } else if (r.lrsUsdRemaining <= 20000) {
+    lrsLimitNote.textContent = `Approaching the LRS annual cap: an estimated $${r.lrsUsdRemaining.toFixed(0)} of headroom remains out of USD ${LRS_ANNUAL_LIMIT_USD.toLocaleString("en-US")} for this financial year (based on the indicative USD/INR rate).`;
+    lrsLimitNote.hidden = false;
+  } else {
+    lrsLimitNote.hidden = true;
+  }
+
+  const commissionSlabNote = document.getElementById("commissionSlabNote");
+  if (r.commissionSlabGapUsd !== null && r.commissionSlabGapUsd <= 25) {
+    commissionSlabNote.textContent = `You're $${r.commissionSlabGapUsd.toFixed(2)} above the $500 commission slab boundary, where commission jumps from ₹500 to ₹1,000. If you have flexibility in the amount, remitting $500 or less would halve the commission.`;
+    commissionSlabNote.hidden = false;
+  } else {
+    commissionSlabNote.hidden = true;
   }
 
   document.getElementById("resultCard").hidden = false;

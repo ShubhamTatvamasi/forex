@@ -94,6 +94,8 @@
       </table>
 
       <p class="disclaimer" id="thresholdNote"></p>
+      <p class="disclaimer" id="lrsLimitNote" hidden></p>
+      <p class="recommendation" id="commissionSlabNote" hidden></p>
     </section>
 
   </main>
@@ -132,10 +134,37 @@
         <br /><br />
         <strong>Recommendation:</strong> whenever your remittance currency is USD, EUR, or GBP, always choose <strong>Full Value</strong> — it is strictly better than the other two options since it guarantees zero correspondent bank charges, for you or the beneficiary, at no extra cost.
       </li>
+      <li><strong>LRS annual limit</strong>: separate from the ₹10,00,000 TCS threshold, the Liberalised Remittance Scheme itself caps total outward remittances at USD 2,50,000 per financial year, per individual — a hard regulatory limit, not just a tax trigger. This calculator estimates your cumulative USD total using the indicative USD/INR rate and warns as you approach or exceed it.</li>
+      <li><strong>Commission slab boundary</strong>: for USD remittances just above the $500 commission slab, the commission jumps from ₹500 to ₹1,000. If your amount is flexible and only slightly over $500, staying at or under it halves the commission.</li>
     </ol>
+    <p class="disclaimer">
+      Forex rates on RemitNow/FX-Retail style platforms are typically only bookable Monday–Friday during market hours (broadly 9:15 AM–3:30 PM IST). Outside this window, treat any rate you enter here as indicative only, not a bookable live rate.
+    </p>
     <p class="disclaimer">
       This is an independent educational estimator, not an official HDFC Bank tool. Actual charges also include correspondent/intermediary bank fees that vary by route and are not known in advance. Rates, slabs and thresholds are subject to change — always confirm current charges with your bank before remitting.
     </p>
+  </section>
+
+  <section class="card info-card">
+    <h2>Useful links</h2>
+    <ul class="links-list">
+      <li>
+        <a href="https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/interest-rates/hdfc-bank-treasury-forex-card-rates.pdf" target="_blank" rel="noopener noreferrer">HDFC Bank Treasury Forex Card Rates (PDF)</a>
+        <p class="hint">The live daily rate sheet, published by HDFC Bank. Use the "T.T. Selling (O/w Rem)" column for your currency as the base rate for outward remittances — it updates daily and is the actual card rate applied at debit, not just an indicative mid-market rate.</p>
+      </li>
+      <li>
+        <a href="https://www.hdfc.bank.in/remitnow" target="_blank" rel="noopener noreferrer">HDFC Bank RemitNow</a>
+        <p class="hint">Official product page for HDFC's outward remittance service that this calculator is modelled on.</p>
+      </li>
+      <li>
+        <a href="https://www.fxretail.co.in" target="_blank" rel="noopener noreferrer">FX Retail (Clearcorp)</a>
+        <p class="hint">RBI-backed platform for booking retail forex deals (SPOT/TOM/CASH/FORWARD) directly with your relationship bank at market-driven rates.</p>
+      </li>
+      <li>
+        <a href="https://www.bharat-connect.com/forex/" target="_blank" rel="noopener noreferrer">Bharat Connect Forex (BBPS)</a>
+        <p class="hint">FX Retail integration via Bharat Connect — USD-only, capped at USD 10,000 per remittance/forex-card transaction and USD 3,000 for physical currency, within the overall USD 2,50,000/FY LRS limit. Resident individuals only; bookable Mon–Fri, 9:15 AM–3:30 PM.</p>
+      </li>
+    </ul>
   </section>
 
   <footer class="footer">
