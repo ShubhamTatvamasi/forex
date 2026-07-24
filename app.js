@@ -143,7 +143,9 @@ function calculate() {
   const supplyValue = valueOfSupply(ace);
   const cgstOnAce = supplyValue * CGST_RATE;
   const sgstOnAce = supplyValue * SGST_RATE;
-  const totalGstOnAce = cgstOnAce + sgstOnAce;
+  // Sum the rounded CGST/SGST (not the raw values) so this matches what the
+  // individual rows display and what totalCharges actually adds up.
+  const totalGstOnAce = roundHalfUp2(cgstOnAce) + roundHalfUp2(sgstOnAce);
   const slab = gstSlab(ace);
   // Effective GST as a % of the amount exchanged, matching how the HDFC page
   // expresses its slab rates.
