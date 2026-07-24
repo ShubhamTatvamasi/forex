@@ -203,8 +203,8 @@ function renderResult(r) {
   document.getElementById("totalValue").textContent = formatINR(r.totalPayable);
 
   const rows = [
-    row("Effective exchange rate", `1 ${r.currency} = ₹${r.effectiveRate.toFixed(4)}`),
-    row(`Amount of Currency Exchanged (${r.fcyAmount} ${r.currency})`, formatINR(r.ace)),
+    row("Effective exchange rate", `1 ${r.currency} (${CURRENCY_SYMBOLS[r.currency]}) = ₹${r.effectiveRate.toFixed(4)}`),
+    row(`Amount of Currency Exchanged (${CURRENCY_SYMBOLS[r.currency]}${r.fcyAmount} ${r.currency})`, formatINR(r.ace)),
 
     row("Fees & Commission", "", { section: true }),
     row("RemitNow commission", formatINR(r.commission)),
