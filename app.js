@@ -17,6 +17,16 @@ const SGST_RATE = 0.09;
 
 const LRS_TCS_THRESHOLD = 1000000; // Rs 10,00,000 per financial year
 
+// Full Value is available for remittances in these currencies, to any
+// destination, for all personal purposes offered under RemitNow.
+const FULL_VALUE_CURRENCIES = ["USD", "EUR", "GBP"];
+
+const CORRESPONDENT_CHARGE_HINTS = {
+  self: "Correspondent bank charges will be borne by you and applied separately, post successful processing of the transaction — not included in the totals below.",
+  beneficiary: "Correspondent bank charges will be borne by the beneficiary and deducted from the remittance amount sent — they will receive less than the amount shown below.",
+  full_value: "No correspondent bank charges are levied when this option is chosen.",
+};
+
 function populateCurrencies() {
   const select = document.getElementById("currency");
   select.innerHTML = CURRENCIES
@@ -70,6 +80,24 @@ function calculate() {
   const markupPerUnit = parseFloat(document.getElementById("markup").value) || 0;
   const purpose = document.getElementById("purpose").value;
   const priorLrs = parseFloat(document.getElementById("priorLrs").value) || 0;
+  const correspondentCharge = document.getElementById("correspondentCharge").value;
+
+  const fullValueEligible = FULL_VALUE_CURRENCIES.includes(currency);
+
+  const correspondentChargeHint = document.getElementById("correspondentChargeHint");
+  correspondentChargeHint.textContent =
+    correspondentCharge === "full_value" && !fullValueEligible
+      ? `Full Value is only available for remittances in ${FULL_VALUE_CURRENCIES.join(", ")} — select one of those currencies, or choose Self / Beneficiary instead.`
+      : CORRESPONDENT_CHARGE_HINTS[correspondentCharge];
+
+  const fullValueRecommendation = document.getElementById("fullValueRecommendation");
+  if (fullValueEligible && correspondentCharge !== "full_value") {
+    fullValueRecommendation.textContent =
+      "Recommended: switch to Full Value — it's available for this currency and guarantees zero correspondent bank charges, for you or the beneficiary, at no extra cost.";
+    fullValueRecommendation.hidden = false;
+  } else {
+    fullValueRecommendation.hidden = true;
+  }
 
   const effectiveRate = baseRate + markupPerUnit;
   const ace = fcyAmount * effectiveRate;
@@ -191,6 +219,7 @@ const INPUT_IDS = [
   "markup",
   "purpose",
   "priorLrs",
+  "correspondentCharge",
 ];
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -158,6 +158,13 @@ input:focus, select:focus {
   margin: 2px 0 0;
 }
 
+.recommendation {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--good);
+  margin: 4px 0 0;
+}
+
 .result-card {
   display: flex;
   flex-direction: column;

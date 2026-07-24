@@ -60,6 +60,19 @@
         </div>
       </div>
 
+      <div class="field-row">
+        <div class="field">
+          <label for="correspondentCharge">Correspondent bank charges to be borne by</label>
+          <select id="correspondentCharge">
+            <option value="self" selected>Self</option>
+            <option value="beneficiary">Beneficiary</option>
+            <option value="full_value">Full Value (USD / EUR / GBP only)</option>
+          </select>
+          <p class="hint" id="correspondentChargeHint"></p>
+          <p class="recommendation" id="fullValueRecommendation" hidden></p>
+        </div>
+      </div>
+
     </section>
 
     <section class="card result-card" id="resultCard" hidden>
@@ -108,6 +121,16 @@
           <li>All other purposes (travel, gifts, investments, maintenance, etc.): nil up to ₹10 lakh, 20% above, regardless of PAN status</li>
         </ul>
         TCS is not a bank charge — it is deposited with the government against your PAN and can be claimed as a credit / refund when filing your income tax return.
+      </li>
+      <li><strong>Correspondent Bank charges</strong>: outward remittances are routed through correspondent/intermediary banks abroad, who may levy their own processing charge. This is separate from and in addition to RemitNow's own commission. Who pays it depends on the option chosen:
+        <ul>
+          <li><strong>Self</strong> — borne by you (the remitter), charged separately after the transaction is successfully processed.</li>
+          <li><strong>Beneficiary</strong> — borne by the recipient; it is deducted from the remittance amount, so they receive less than the amount sent.</li>
+          <li><strong>Full Value</strong> — no correspondent bank charge is levied at all. Available only for remittances in USD, EUR, or GBP, to any destination, for all personal purposes offered under RemitNow.</li>
+        </ul>
+        The actual charge amount for Self/Beneficiary is set by the correspondent bank, varies by route/currency, and is not known in advance — so it is not included in the totals below.
+        <br /><br />
+        <strong>Recommendation:</strong> whenever your remittance currency is USD, EUR, or GBP, always choose <strong>Full Value</strong> — it is strictly better than the other two options since it guarantees zero correspondent bank charges, for you or the beneficiary, at no extra cost.
       </li>
     </ol>
     <p class="disclaimer">
