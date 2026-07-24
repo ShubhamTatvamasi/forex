@@ -106,7 +106,10 @@ function calculate() {
   const markupPerUnit = parseFloat(document.getElementById("markup").value) || 0;
   const purpose = document.getElementById("purpose").value;
   const panStatus = document.getElementById("panStatus").value;
-  const priorLrs = parseFloat(document.getElementById("priorLrs").value) || 0;
+  const priorLrsOverThreshold = document.getElementById("priorLrsOverThreshold").checked;
+  const priorLrs = priorLrsOverThreshold
+    ? Math.max(LRS_TCS_THRESHOLD, parseFloat(document.getElementById("priorLrs").value) || 0)
+    : parseFloat(document.getElementById("priorLrs").value) || 0;
   const correspondentCharge = document.getElementById("correspondentCharge").value;
 
   const fullValueEligible = FULL_VALUE_CURRENCIES.includes(currency);
@@ -319,6 +322,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById(id);
     el.addEventListener("input", calculate);
     el.addEventListener("change", calculate);
+  });
+
+  const priorLrsInput = document.getElementById("priorLrs");
+  const priorLrsOverThreshold = document.getElementById("priorLrsOverThreshold");
+  const setPriorLrsDisabled = (disabled) => {
+    priorLrsInput.disabled = disabled;
+    document
+      .querySelectorAll('.stepper-btn[data-step-target="priorLrs"]')
+      .forEach((btn) => (btn.disabled = disabled));
+  };
+  let priorLrsBeforeTick = priorLrsInput.value;
+  priorLrsOverThreshold.addEventListener("change", () => {
+    const checked = priorLrsOverThreshold.checked;
+    if (checked) {
+      priorLrsBeforeTick = priorLrsInput.value;
+      priorLrsInput.value = LRS_TCS_THRESHOLD;
+    } else {
+      priorLrsInput.value = priorLrsBeforeTick;
+    }
+    setPriorLrsDisabled(checked);
+    calculate();
   });
   Object.keys(STEPPER_DECIMALS).forEach((id) => {
     const el = document.getElementById(id);

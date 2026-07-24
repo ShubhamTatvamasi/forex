@@ -270,7 +270,17 @@
               <button type="button" class="stepper-btn" data-step-target="priorLrs" data-step-dir="down" aria-label="Decrease prior LRS amount">▼</button>
             </div>
           </div>
-          <p class="hint">Used to check the ₹10,00,000 TCS threshold, which applies per financial year across all LRS remittances, not per transaction.</p>
+          <label class="toggle-card" for="priorLrsOverThreshold">
+            <span class="toggle-switch">
+              <input type="checkbox" id="priorLrsOverThreshold" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </span>
+            <span class="toggle-text">
+              <span class="toggle-title">Already crossed ₹10,00,000 this FY</span>
+              <span class="toggle-subtitle">Sets the amount above to ₹10,00,000 automatically</span>
+            </span>
+          </label>
+          <p class="hint">Used to check the ₹10,00,000 TCS threshold, which applies per financial year across all LRS remittances, not per transaction. If you've already crossed it but don't know the exact figure, tick the box above instead of entering an amount.</p>
         </div>
         <div class="field field-corr">
           <label for="correspondentCharge">Correspondent bank charges to be borne by</label>
