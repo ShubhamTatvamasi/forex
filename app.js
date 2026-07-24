@@ -139,6 +139,10 @@ function calculate() {
 
   const cgstOnCommission = commission * CGST_RATE;
   const sgstOnCommission = commission * SGST_RATE;
+  // Sum the rounded components (not the raw values) so this matches what the
+  // individual rows display and what totalCharges actually adds up.
+  const totalCommissionCharges =
+    roundHalfUp2(commission) + roundHalfUp2(cgstOnCommission) + roundHalfUp2(sgstOnCommission);
 
   const supplyValue = valueOfSupply(ace);
   const cgstOnAce = supplyValue * CGST_RATE;
@@ -193,6 +197,7 @@ function calculate() {
     commission,
     cgstOnCommission,
     sgstOnCommission,
+    totalCommissionCharges,
     supplyValue,
     cgstOnAce,
     sgstOnAce,
@@ -238,13 +243,14 @@ function renderResult(r) {
     row("RemitNow commission", formatINR(r.commission)),
     row("CGST on commission (9%)", formatINR(r.cgstOnCommission)),
     row("SGST on commission (9%)", formatINR(r.sgstOnCommission)),
+    row("Total Fees & Commission", formatINR(r.totalCommissionCharges), { subtotal: true }),
 
     row("GST on Amount of Currency Exchanged", "", { section: true }),
     row(`Applicable GST slab: ${r.gstRateLabel} (min ₹${r.gstMin}, max ₹${r.gstMax.toLocaleString("en-IN")})`, "", { note: true }),
     row("Value of supply (tax base only — not a charge)", formatINR(r.supplyValue), { note: true }),
     row("CGST on value of supply (9%)", formatINR(r.cgstOnAce)),
     row("SGST on value of supply (9%)", formatINR(r.sgstOnAce)),
-    row(`Total GST on ACE (effective ${r.effectiveGstPct.toFixed(3)}% of ACE)`, formatINR(r.totalGstOnAce)),
+    row(`Total GST on ACE (effective ${r.effectiveGstPct.toFixed(3)}% of ACE)`, formatINR(r.totalGstOnAce), { subtotal: true }),
 
     row("Tax Collected at Source", "", { section: true }),
     row(
