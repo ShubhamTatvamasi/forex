@@ -112,7 +112,7 @@ body {
 
 @media (min-width: 720px) {
   .layout {
-    grid-template-columns: minmax(380px, 1fr) minmax(380px, 1fr);
+    grid-template-columns: minmax(340px, 45fr) minmax(380px, 55fr);
     align-items: start;
   }
 }
