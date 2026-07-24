@@ -20,8 +20,8 @@
     <section class="card form-card">
       <h2>Remittance Details</h2>
 
-      <div class="field-row">
-        <div class="field">
+      <div class="form-grid">
+        <div class="field field-fcy">
           <label for="fcyAmount">Foreign currency amount</label>
           <div class="stepper">
             <input type="number" id="fcyAmount" min="0" step="0.01" value="500" />
@@ -31,14 +31,11 @@
             </div>
           </div>
         </div>
-        <div class="field">
+        <div class="field field-currency">
           <label for="currency">Currency</label>
           <select id="currency"></select>
         </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
+        <div class="field field-baserate">
           <label for="baseRate">Mid-market / base rate (1 unit → INR)</label>
           <div class="stepper">
             <input type="number" id="baseRate" min="0" step="0.01" value="96.30" />
@@ -48,7 +45,7 @@
             </div>
           </div>
         </div>
-        <div class="field">
+        <div class="field field-markup">
           <label for="markup">Exchange rate markup (₹ per unit)</label>
           <div class="stepper">
             <input type="number" id="markup" min="0" step="0.01" value="0.2" />
@@ -58,21 +55,213 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
+        <div class="field field-purpose">
           <label for="purpose">Purpose of remittance</label>
           <select id="purpose">
-            <option value="education_loan">Education (funded by loan)</option>
-            <option value="education_medical">Education (self-funded) / Medical treatment</option>
-            <option value="other" selected>Other (gift, travel, investment, maintenance, etc.)</option>
+            <optgroup label="Travel">
+              <option value="other">Business travel [S0301]</option>
+              <option value="other">Travel for pilgrimage [S0303]</option>
+              <option value="education_medical">Travel for medical treatment [S0304]</option>
+              <option value="education_loan">Travel for education — funded by a specified loan [S0305]</option>
+              <option value="education_medical">Travel for education — self-funded [S0305]</option>
+              <option value="other">Other travel, incl. holiday trips & credit card settlements [S0306]</option>
+            </optgroup>
+            <optgroup label="Capital Account">
+              <option value="other">Acquisition of non-produced non-financial assets — Government [S0017]</option>
+              <option value="other">Acquisition of non-produced non-financial assets — Non-Govt [S0019]</option>
+              <option value="other">Capital transfers — Government [S0026]</option>
+              <option value="other">Capital transfers — Non-Government [S0027]</option>
+              <option value="other">Other capital payments not included elsewhere [S0099]</option>
+            </optgroup>
+            <optgroup label="Foreign Direct Investment">
+              <option value="other">Indian Direct Investment abroad — equity shares [S0003]</option>
+              <option value="other">Indian Direct Investment abroad — debt instruments [S0004]</option>
+              <option value="other">Indian investment abroad — real estate [S0005]</option>
+              <option value="other">Repatriation of FDI made by overseas investors in India — equity shares [S0006]</option>
+              <option value="other">Repatriation of FDI made by overseas investors in India — debt instruments [S0007]</option>
+              <option value="other">Repatriation of FDI made by overseas investors in India — real estate [S0008]</option>
+            </optgroup>
+            <optgroup label="Foreign Portfolio Investment">
+              <option value="other" selected>Indian Portfolio Investment abroad — equity shares [S0001]</option>
+              <option value="other">Indian Portfolio Investment abroad — debt instruments [S0002]</option>
+              <option value="other">Repatriation of Foreign Portfolio Investment in India — equity shares [S0009]</option>
+              <option value="other">Repatriation of Foreign Portfolio Investment in India — debt instruments [S0010]</option>
+            </optgroup>
+            <optgroup label="External Commercial Borrowings / Loans">
+              <option value="other">Loans extended to Non-Residents [S0011]</option>
+              <option value="other">Repayment of long/medium term loans from Non-Residents [S0012]</option>
+              <option value="other">Repayment of short term loans from Non-Residents [S0013]</option>
+            </optgroup>
+            <optgroup label="Banking Capital">
+              <option value="other">Repatriation of Non-Resident Deposits (FCNR(B)/NR(E)RA etc.) [S0014]</option>
+              <option value="other">Repayment of loans/overdrafts taken by ADs on own account [S0015]</option>
+              <option value="other">Sale of a foreign currency against another foreign currency [S0016]</option>
+            </optgroup>
+            <optgroup label="Financial Derivatives and Others">
+              <option value="other">Margin/premium/settlement payments — financial derivatives [S0020]</option>
+              <option value="other">Sale of share under Employee Stock Option [S0021]</option>
+              <option value="other">Investment in Indian Depository Receipts (IDRs) [S0022]</option>
+              <option value="other">Opening of foreign currency account abroad with a bank [S0023]</option>
+            </optgroup>
+            <optgroup label="External Assistance">
+              <option value="other">External Assistance extended by India [S0024]</option>
+              <option value="other">Repayments on account of External Assistance received by India [S0025]</option>
+            </optgroup>
+            <optgroup label="Imports">
+              <option value="other">Advance payment against imports (other than Nepal/Bhutan) [S0101]</option>
+              <option value="other">Payment towards imports — settlement of invoice [S0102]</option>
+              <option value="other">Imports by diplomatic missions [S0103]</option>
+              <option value="other">Intermediary / transit trade [S0104]</option>
+              <option value="other">Goods acquired under merchanting [S0108]</option>
+              <option value="other">Payments for imports from Nepal and Bhutan [S0109]</option>
+            </optgroup>
+            <optgroup label="Transport">
+              <option value="other">Surplus freight/passenger fare — foreign shipping cos. in India [S0201]</option>
+              <option value="other">Operating expenses — Indian shipping cos. abroad [S0202]</option>
+              <option value="other">Freight on imports — shipping companies [S0203]</option>
+              <option value="other">Freight on exports — shipping companies [S0204]</option>
+              <option value="other">Operational leasing/rental of vessels (with crew) — shipping [S0205]</option>
+              <option value="other">Booking of passages abroad — shipping companies [S0206]</option>
+              <option value="other">Surplus freight/passenger fare — foreign airlines in India [S0207]</option>
+              <option value="other">Operating expenses — Indian airlines abroad [S0208]</option>
+              <option value="other">Freight on imports — airlines companies [S0209]</option>
+              <option value="other">Freight on exports — airlines companies [S0210]</option>
+              <option value="other">Operational leasing/rental of vessels (with crew) — airlines [S0211]</option>
+              <option value="other">Booking of passages abroad — airlines companies [S0212]</option>
+              <option value="other">Stevedoring, demurrage, port handling — shipping [S0214]</option>
+              <option value="other">Stevedoring, demurrage, port handling — airlines [S0215]</option>
+              <option value="other">Payments for passenger — shipping companies [S0216]</option>
+              <option value="other">Other payments by shipping companies [S0217]</option>
+              <option value="other">Payments for passenger — airlines companies [S0218]</option>
+              <option value="other">Other payments by airlines companies [S0219]</option>
+              <option value="other">Freight — other transport modes (waterways/road/rail/pipeline) [S0220]</option>
+              <option value="other">Passenger fare — other transport modes [S0221]</option>
+              <option value="other">Postal & courier services by air [S0222]</option>
+              <option value="other">Postal & courier services by sea [S0223]</option>
+              <option value="other">Postal & courier services by others [S0224]</option>
+            </optgroup>
+            <optgroup label="Construction Services">
+              <option value="other">Construction of projects abroad by Indian companies [S0501]</option>
+              <option value="other">Cost of construction of projects by foreign cos. in India [S0502]</option>
+            </optgroup>
+            <optgroup label="Insurance and Pension Services">
+              <option value="other">Life insurance premium except term insurance [S0601]</option>
+              <option value="other">Freight insurance — import & export of goods [S0602]</option>
+              <option value="other">Other general/reinsurance/term life insurance premium [S0603]</option>
+              <option value="other">Auxiliary services incl. commission on insurance [S0605]</option>
+              <option value="other">Insurance claim settlement — non-life / term life [S0607]</option>
+              <option value="other">Life insurance claim settlements [S0608]</option>
+              <option value="other">Standardised guarantee services [S0609]</option>
+              <option value="other">Premium for pension funds [S0610]</option>
+              <option value="other">Periodic pension entitlements [S0611]</option>
+              <option value="other">Invoking of standardised guarantees [S0612]</option>
+            </optgroup>
+            <optgroup label="Financial Services">
+              <option value="other">Financial intermediation — bank/collection/LC charges [S0701]</option>
+              <option value="other">Investment banking — brokerage, underwriting commission [S0702]</option>
+              <option value="other">Auxiliary services — regulatory fees, custodial/depository [S0703]</option>
+            </optgroup>
+            <optgroup label="Telecommunication, Computer & Information Services">
+              <option value="other">Hardware consultancy/implementation [S0801]</option>
+              <option value="other">Software consultancy/implementation [S0802]</option>
+              <option value="other">Database, data processing charges [S0803]</option>
+              <option value="other">Repair and maintenance of computer and software [S0804]</option>
+              <option value="other">News agency services [S0805]</option>
+              <option value="other">Subscription to newspapers, periodicals [S0806]</option>
+              <option value="other">Off-site software imports [S0807]</option>
+              <option value="other">Telecommunication services incl. email/voice mail [S0808]</option>
+              <option value="other">Satellite services incl. space shuttle and rockets [S0809]</option>
+            </optgroup>
+            <optgroup label="Charges for Use of Intellectual Property">
+              <option value="other">Franchises services [S0901]</option>
+              <option value="other">Licensing of originals, patents, copyrights, trademarks [S0902]</option>
+            </optgroup>
+            <optgroup label="Other Business Services">
+              <option value="other">Trade related services — commission on exports/imports [S1002]</option>
+              <option value="other">Operational leasing without crew — airlines [S1003]</option>
+              <option value="other">Legal services [S1004]</option>
+              <option value="other">Accounting, auditing, book-keeping services [S1005]</option>
+              <option value="other">Business/management consultancy & PR services [S1006]</option>
+              <option value="other">Advertising, trade fair service [S1007]</option>
+              <option value="other">Research & Development services [S1008]</option>
+              <option value="other">Architectural services [S1009]</option>
+              <option value="other">Agricultural services (pest/disease control, forestry) [S1010]</option>
+              <option value="other">Payments for maintenance of offices abroad [S1011]</option>
+              <option value="other">Environmental services [S1013]</option>
+              <option value="other">Engineering services [S1014]</option>
+              <option value="other">Tax consulting services [S1015]</option>
+              <option value="other">Market research and public opinion polling [S1016]</option>
+              <option value="other">Publishing and printing services [S1017]</option>
+              <option value="other">Mining services (on-site processing, ore analysis) [S1018]</option>
+              <option value="other">Commission agent services [S1020]</option>
+              <option value="other">Wholesale and retailing trade services [S1021]</option>
+              <option value="other">Operational leasing without crew — shipping [S1022]</option>
+              <option value="other">Other technical services incl. scientific/space [S1023]</option>
+              <option value="other">Other services not included elsewhere [S1099]</option>
+            </optgroup>
+            <optgroup label="Personal, Cultural & Recreational Services">
+              <option value="other">Audio-visual/motion picture & video tape production [S1101]</option>
+              <option value="other">Radio and television production/distribution [S1103]</option>
+              <option value="other">Entertainment services [S1104]</option>
+              <option value="other">Museums, library and archival services [S1105]</option>
+              <option value="other">Recreation and sporting activities services [S1106]</option>
+              <option value="other">Education — fees for correspondence courses abroad [S1107]</option>
+              <option value="education_medical">Health service — hospitals, doctors, remote/on-site [S1108]</option>
+              <option value="other">Other personal, cultural & recreational services [S1109]</option>
+            </optgroup>
+            <optgroup label="Government (n.i.e.)">
+              <option value="other">Maintenance of Indian embassies abroad [S1201]</option>
+              <option value="other">Remittances by foreign embassies in India [S1202]</option>
+            </optgroup>
+            <optgroup label="Secondary Income">
+              <option value="other">Family maintenance and savings [S1301]</option>
+              <option value="other">Personal gifts and donations [S1302]</option>
+              <option value="other">Donations to religious/charitable institutions abroad [S1303]</option>
+              <option value="other">Grants/donations to governments & charitable institutions [S1304]</option>
+              <option value="other">Contributions/donations by Government to intl. institutions [S1305]</option>
+              <option value="other">Payment / refund of taxes [S1306]</option>
+              <option value="other">Migrant transfers incl. personal effects [S1307]</option>
+            </optgroup>
+            <optgroup label="Primary Income">
+              <option value="other">Compensation of employees [S1401]</option>
+              <option value="other">Interest on Non-Resident deposits (FCNR(B)/NR(E)RA) [S1402]</option>
+              <option value="other">Interest on loans from Non-Residents (ST/MT/LT) [S1403]</option>
+              <option value="other">Interest payment by ADs on own account [S1405]</option>
+              <option value="other">Remittance of profit by FDI enterprises in India [S1408]</option>
+              <option value="other">Remittance of dividends by FDI enterprises in India [S1409]</option>
+              <option value="other">Interest by FDI enterprises to parent company abroad [S1410]</option>
+              <option value="other">Interest income on Portfolio Investment in India [S1411]</option>
+              <option value="other">Dividends on Portfolio Investment in India [S1412]</option>
+            </optgroup>
+            <optgroup label="Others">
+              <option value="other">Refunds/rebates/reduction in invoice value — exports [S1501]</option>
+              <option value="other">Reversal of wrong entries, refunds for non-exports [S1502]</option>
+              <option value="other">Payments by residents for international bidding [S1503]</option>
+              <option value="other">Notional sales — dishonored/cancelled export bills [S1504]</option>
+              <option value="other">Deemed imports (SEZ/EPZ ↔ Domestic Tariff Area) [S1505]</option>
+            </optgroup>
+            <optgroup label="Maintenance and Repair Services">
+              <option value="other">Maintenance/repair — vessels, ships, boats, warships [S1601]</option>
+              <option value="other">Maintenance/repair — aircraft, space shuttles, rockets [S1602]</option>
+            </optgroup>
+            <optgroup label="Manufacturing Services">
+              <option value="other">Payments for processing of goods [S1701]</option>
+            </optgroup>
+            <optgroup label="Not Listed">
+              <option value="other">Other purpose not listed above</option>
+            </optgroup>
           </select>
+          <p class="hint">RBI purpose codes (Form A2) shown in brackets, grouped by RBI purpose category — select the option matching the actual nature of your remittance, as it determines your TCS rate. Full source list under Useful Links.</p>
         </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
+        <div class="field" id="panStatusField">
+          <label for="panStatus">Your PAN status</label>
+          <select id="panStatus">
+            <option value="operative" selected>Linked to Aadhaar / operative</option>
+            <option value="inoperative">Inoperative (not linked to Aadhaar)</option>
+          </select>
+          <p class="hint">Only affects the TCS rate for education (self-funded) / medical treatment remittances — the rate rises from 2% to 5% above ₹10 lakh if your PAN is inoperative. Doesn't apply to loan-funded education (always 0%) or other purposes (always 20% regardless of PAN status).</p>
+        </div>
+        <div class="field field-prior">
           <label for="priorLrs">LRS remittances already made this FY (₹)</label>
           <div class="stepper">
             <input type="number" id="priorLrs" min="0" step="1000" value="0" />
@@ -83,10 +272,7 @@
           </div>
           <p class="hint">Used to check the ₹10,00,000 TCS threshold, which applies per financial year across all LRS remittances, not per transaction.</p>
         </div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
+        <div class="field field-corr">
           <label for="correspondentCharge">Correspondent bank charges to be borne by</label>
           <select id="correspondentCharge">
             <option value="self">Self</option>
@@ -103,24 +289,34 @@
     <section class="card result-card" id="resultCard" hidden>
       <h2>Breakdown</h2>
 
-      <div class="result-hero">
-        <div class="hero-item">
-          <span class="hero-label">Amount of Currency Exchanged (ACE)</span>
-          <span class="hero-value" id="aceValue">₹0.00</span>
+      <div class="result-body">
+        <div class="result-hero">
+          <div class="hero-item total">
+            <span class="hero-label">Total payable (debit to account)</span>
+            <span class="hero-value" id="totalValue">₹0.00</span>
+          </div>
+          <div class="hero-item">
+            <span class="hero-label">Amount of Currency Exchanged (ACE)</span>
+            <span class="hero-value" id="aceValue">₹0.00</span>
+          </div>
+          <div class="hero-item">
+            <span class="hero-label">Total charges (commission + GST + TCS)</span>
+            <span class="hero-value" id="chargesValue">₹0.00</span>
+          </div>
         </div>
-        <div class="hero-item total">
-          <span class="hero-label">Total payable (debit to account)</span>
-          <span class="hero-value" id="totalValue">₹0.00</span>
+
+        <div class="result-table-wrap">
+          <table class="breakdown-table">
+            <tbody id="breakdownBody"></tbody>
+          </table>
+        </div>
+
+        <div class="result-notes">
+          <p class="disclaimer" id="thresholdNote"></p>
+          <p class="disclaimer" id="lrsLimitNote" hidden></p>
+          <p class="recommendation" id="commissionSlabNote" hidden></p>
         </div>
       </div>
-
-      <table class="breakdown-table">
-        <tbody id="breakdownBody"></tbody>
-      </table>
-
-      <p class="disclaimer" id="thresholdNote"></p>
-      <p class="disclaimer" id="lrsLimitNote" hidden></p>
-      <p class="recommendation" id="commissionSlabNote" hidden></p>
     </section>
 
   </main>
@@ -143,9 +339,9 @@
       </li>
       <li><strong>TCS (Tax Collected at Source)</strong> under LRS, applied to cumulative remittances in the financial year (post Budget 2025 rates, effective 1 Apr 2025):
         <ul>
-          <li>Education funded by a specified loan: 0%, no threshold</li>
-          <li>Education (self-funded) / medical treatment: nil up to ₹10 lakh, 2% above (assumes a linked/operative PAN — the rate rises to 5% if your PAN is inoperative)</li>
-          <li>All other purposes (travel, gifts, investments, maintenance, etc.): nil up to ₹10 lakh, 20% above, regardless of PAN status</li>
+          <li>Education funded by a specified loan [RBI purpose code S0305]: 0%, no threshold</li>
+          <li>Education (self-funded) [S0305] / medical treatment [S0304]: nil up to ₹10 lakh, 2% above with an operative/Aadhaar-linked PAN, or 5% above if your PAN is inoperative — selectable via the PAN status field, shown only for this purpose category</li>
+          <li>All other purposes (travel [S0306], gifts/donations [S1302], investments [S0001/S0002], family maintenance [S1301], etc.): nil up to ₹10 lakh, 20% above, regardless of PAN status</li>
         </ul>
         TCS is not a bank charge — it is deposited with the government against your PAN and can be claimed as a credit / refund when filing your income tax return.
       </li>
@@ -188,6 +384,10 @@
       <li>
         <a href="https://www.bharat-connect.com/forex/" target="_blank" rel="noopener noreferrer">Bharat Connect Forex (BBPS)</a>
         <p class="hint">FX Retail integration via Bharat Connect — USD-only, capped at USD 10,000 per remittance/forex-card transaction and USD 3,000 for physical currency, within the overall USD 2,50,000/FY LRS limit. Resident individuals only; bookable Mon–Fri, 9:15 AM–3:30 PM.</p>
+      </li>
+      <li>
+        <a href="https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/pdf/forms-centre/retail-trade-and-forex-(rtfx)/List%20of%20Purpose%20Codes%20-%20Outward%20Remittance%20-%20Forex%20Sale.pdf" target="_blank" rel="noopener noreferrer">RBI List of Purpose Codes — Outward Remittance (PDF)</a>
+        <p class="hint">The full official RBI purpose code list for outward remittance/forex sale transactions, published by HDFC Bank. Use this to find the exact code for purposes not covered by the options in this calculator's dropdown above.</p>
       </li>
     </ul>
   </section>

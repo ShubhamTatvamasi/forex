@@ -77,12 +77,10 @@ function valueOfSupply(ace) {
   return Math.min(uncapped, 60000);
 }
 
-// Assumes a linked/operative PAN. If your PAN is inoperative, the
-// education/medical rate rises from 2% to 5% — see the methodology note.
-function tcsRate(purpose, amountAboveThreshold) {
+function tcsRate(purpose, panStatus, amountAboveThreshold) {
   if (amountAboveThreshold <= 0) return 0;
   if (purpose === "education_loan") return 0;
-  if (purpose === "education_medical") return 0.02;
+  if (purpose === "education_medical") return panStatus === "inoperative" ? 0.05 : 0.02;
   // "other"
   return 0.2;
 }
@@ -93,6 +91,7 @@ function calculate() {
   const baseRate = parseFloat(document.getElementById("baseRate").value) || 0;
   const markupPerUnit = parseFloat(document.getElementById("markup").value) || 0;
   const purpose = document.getElementById("purpose").value;
+  const panStatus = document.getElementById("panStatus").value;
   const priorLrs = parseFloat(document.getElementById("priorLrs").value) || 0;
   const correspondentCharge = document.getElementById("correspondentCharge").value;
 
@@ -139,7 +138,9 @@ function calculate() {
     ? ace
     : Math.max(0, cumulativeAfter - LRS_TCS_THRESHOLD);
 
-  const rate = tcsRate(purpose, taxableForTcs);
+  document.getElementById("panStatusField").hidden = purpose !== "education_medical";
+
+  const rate = tcsRate(purpose, panStatus, taxableForTcs);
   const tcs = taxableForTcs * rate;
 
   // LRS annual cap is denominated in USD; convert the cumulative INR total
@@ -201,6 +202,7 @@ function row(label, value, opts = {}) {
 function renderResult(r) {
   document.getElementById("aceValue").textContent = formatINR(r.ace);
   document.getElementById("totalValue").textContent = formatINR(r.totalPayable);
+  document.getElementById("chargesValue").textContent = formatINR(r.totalCharges);
 
   const rows = [
     row("Effective exchange rate", `1 ${r.currency} (${CURRENCY_SYMBOLS[r.currency]}) = ₹${r.effectiveRate.toFixed(4)}`),
@@ -265,6 +267,7 @@ const INPUT_IDS = [
   "baseRate",
   "markup",
   "purpose",
+  "panStatus",
   "priorLrs",
   "correspondentCharge",
 ];

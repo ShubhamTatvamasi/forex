@@ -58,9 +58,16 @@
 
 * { box-sizing: border-box; }
 
+/* Author display rules (.field, .result-card) would otherwise override the
+   UA [hidden] rule, so JS hidden-attribute toggles wouldn't actually hide. */
+[hidden] { display: none !important; }
+
 html, body {
   max-width: 100%;
+  /* clip (not hidden) — overflow-x: hidden turns body into a scroll
+     container, which silently disables position: sticky descendants */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -94,19 +101,20 @@ body {
   font-size: 0.95rem;
 }
 
+/* Two-column shell: Remittance Details left, Breakdown right */
 .layout {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
-  min-width: 0;
 }
 
-.layout > .card {
-  min-width: 0;
-}
+.layout > * { min-width: 0; }
 
 @media (min-width: 720px) {
-  .layout { grid-template-columns: minmax(360px, 420px) 1fr; align-items: start; }
+  .layout {
+    grid-template-columns: minmax(380px, 1fr) minmax(380px, 1fr);
+    align-items: start;
+  }
 }
 
 .card {
@@ -122,11 +130,26 @@ body {
   margin: 0 0 16px;
 }
 
-.field-row {
+/* ---- Form deck ---- */
+
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  margin-bottom: 14px;
+  align-items: start;
+}
+
+.form-grid > .field {
+  grid-column: span 2;
+  min-width: 0;
+}
+
+.field-fcy, .field-currency,
+.field-baserate, .field-markup { grid-column: span 1; }
+
+@media (max-width: 480px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid > .field { grid-column: span 1; }
 }
 
 .field { display: flex; flex-direction: column; gap: 6px; }
@@ -204,6 +227,17 @@ input:focus, select:focus {
   margin: 2px 0 0;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  #panStatusField:not([hidden]) {
+    animation: field-fade-in 180ms ease-out;
+  }
+}
+
+@keyframes field-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
 .recommendation {
   font-size: 0.78rem;
   font-weight: 600;
@@ -211,7 +245,15 @@ input:focus, select:focus {
   margin: 4px 0 0;
 }
 
+/* ---- Results band ---- */
+
 .result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-body {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -222,6 +264,9 @@ input:focus, select:focus {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+/* Total payable gets the full first row; ACE and charges pair below */
+.hero-item.total { grid-column: 1 / -1; }
 
 .hero-item {
   background: var(--accent-soft);
@@ -250,6 +295,13 @@ input:focus, select:focus {
   color: var(--text);
 }
 
+.hero-item.total .hero-value { font-size: 1.6rem; }
+
+.result-table-wrap {
+  min-width: 0;
+  overflow-x: auto; /* the table scrolls internally, never the page */
+}
+
 .breakdown-table {
   width: 100%;
   table-layout: fixed;
@@ -261,6 +313,8 @@ input:focus, select:focus {
   padding: 8px 4px;
   border-bottom: 1px solid var(--border);
 }
+
+.breakdown-table td:first-child { width: 60%; }
 
 .breakdown-table td:last-child {
   text-align: right;
@@ -294,13 +348,23 @@ input:focus, select:focus {
   text-align: left;
 }
 
+.result-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
 .disclaimer {
   font-size: 0.78rem;
   color: var(--text-muted);
   margin: 0;
 }
 
-.info-card { margin-top: 20px; }
+/* ---- Info cards: always visible, stacked full width ---- */
+
+.info-card { margin-top: 24px; }
 
 .method-list {
   padding-left: 20px;
@@ -350,10 +414,10 @@ input:focus, select:focus {
 }
 
 @media (max-width: 640px) {
-  .field-row { grid-template-columns: 1fr; }
-  .result-hero { grid-template-columns: 1fr; }
   .header h1 { font-size: 1.35rem; }
   .card { padding: 18px 16px 20px; }
+  .result-hero { grid-template-columns: 1fr; }
   .hero-value { font-size: 1.1rem; }
+  .hero-item.total .hero-value { font-size: 1.4rem; }
   .breakdown-table { font-size: 0.85rem; }
 }
