@@ -290,10 +290,17 @@ input:focus, select:focus {
 .links-list .hint { margin-top: 4px; }
 
 .footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   text-align: center;
   margin-top: 28px;
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+.footer a {
+  color: var(--accent);
 }
 
 @media (max-width: 640px) {
