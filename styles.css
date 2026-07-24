@@ -168,11 +168,26 @@ input, select {
   background: var(--bg);
   color: var(--text);
   width: 100%;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+input:hover, select:hover {
+  border-color: var(--accent);
 }
 
 input:focus, select:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+  background: var(--accent-soft);
+}
+
+input:disabled, select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input:disabled:hover, select:disabled:hover {
+  border-color: var(--border);
 }
 
 .stepper {
