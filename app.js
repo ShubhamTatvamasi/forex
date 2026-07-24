@@ -267,11 +267,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   TWO_DECIMAL_IDS.forEach((id) => {
     const el = document.getElementById(id);
-    el.addEventListener("blur", () => {
+    const reformat = () => {
       const value = parseFloat(el.value);
       if (!isNaN(value)) el.value = value.toFixed(2);
+    };
+    el.addEventListener("blur", reformat);
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        setTimeout(reformat, 0);
+      }
     });
-    el.value = parseFloat(el.value).toFixed(2);
+    reformat();
   });
   calculate();
 });
