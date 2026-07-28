@@ -107,7 +107,7 @@ function tcsRate(purpose, panStatus, amountAboveThreshold) {
 }
 
 function calculate() {
-  const fcyAmount = parseFloat(document.getElementById("fcyAmount").value) || 0;
+  const fcyAmount = parseNum(document.getElementById("fcyAmount").value) || 0;
   const currency = document.getElementById("currency").value;
   const baseRate = parseFloat(document.getElementById("baseRate").value) || 0;
   const markupPerUnit = parseFloat(document.getElementById("markup").value) || 0;
@@ -254,7 +254,7 @@ function renderResult(r) {
 
   const rows = [
     row("Effective exchange rate", `1 ${r.currency} (${CURRENCY_SYMBOLS[r.currency]}) = ₹${r.effectiveRate.toFixed(4)}`),
-    row(`Amount of Currency Exchanged (${CURRENCY_SYMBOLS[r.currency]}${r.fcyAmount} ${r.currency})`, formatINR(r.ace)),
+    row(`Amount of Currency Exchanged (${CURRENCY_SYMBOLS[r.currency]}${r.fcyAmount.toLocaleString("en-IN")} ${r.currency})`, formatINR(r.ace)),
 
     row("Fees & Commission", "", { section: true }),
     row("RemitNow commission", formatINR(r.commission)),
@@ -344,7 +344,7 @@ const STEPPER_DECIMALS = {
 // Text-based amount fields (₹) that display Indian comma-grouped thousands,
 // e.g. "48,320.00" or "10,00,000" — these use type="text" rather than
 // type="number" since browsers reject comma characters in a number input.
-const COMMA_GROUPED_IDS = new Set(["priorLrs", "credAmountPaid"]);
+const COMMA_GROUPED_IDS = new Set(["fcyAmount", "priorLrs", "credAmountPaid"]);
 
 function groupThousands(value, decimals) {
   return value.toLocaleString("en-IN", {
