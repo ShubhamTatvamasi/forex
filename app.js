@@ -311,8 +311,8 @@ const INPUT_IDS = [
 
 const STEPPER_DECIMALS = {
   fcyAmount: 2,
-  baseRate: 2,
-  markup: 2,
+  baseRate: 4,
+  markup: 4,
   priorLrs: 0,
 };
 
