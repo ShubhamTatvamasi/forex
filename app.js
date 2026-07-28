@@ -56,6 +56,13 @@ function roundHalfUp2(amount) {
   return Math.round(amount * 100 + 1e-9) / 100;
 }
 
+// Parses a numeric input field's value, tolerating comma thousands
+// separators (e.g. "10,00,000" or "48,320.00") for the text-based amount
+// fields that display comma-grouped currency values.
+function parseNum(value) {
+  return parseFloat(String(value).replace(/,/g, ""));
+}
+
 function formatINR(amount) {
   return roundHalfUp2(amount).toLocaleString("en-IN", {
     style: "currency",
@@ -108,9 +115,10 @@ function calculate() {
   const panStatus = document.getElementById("panStatus").value;
   const priorLrsOverThreshold = document.getElementById("priorLrsOverThreshold").checked;
   const priorLrs = priorLrsOverThreshold
-    ? Math.max(LRS_TCS_THRESHOLD, parseFloat(document.getElementById("priorLrs").value) || 0)
-    : parseFloat(document.getElementById("priorLrs").value) || 0;
+    ? Math.max(LRS_TCS_THRESHOLD, parseNum(document.getElementById("priorLrs").value) || 0)
+    : parseNum(document.getElementById("priorLrs").value) || 0;
   const correspondentCharge = document.getElementById("correspondentCharge").value;
+  const credAmountPaid = parseNum(document.getElementById("credAmountPaid").value) || 0;
 
   const fullValueEligible = FULL_VALUE_CURRENCIES.includes(currency);
 
@@ -192,6 +200,10 @@ function calculate() {
     roundHalfUp2(tcs);
   const totalPayable = roundHalfUp2(ace) + totalCharges;
 
+  // CRED debits a buffer amount upfront to absorb forex rate fluctuations,
+  // then refunds the excess over ACE as CRED Cash once the trade settles.
+  const credCashback = credAmountPaid > 0 ? Math.max(0, credAmountPaid - roundHalfUp2(ace)) : 0;
+
   renderResult({
     fcyAmount,
     currency,
@@ -219,6 +231,8 @@ function calculate() {
     cumulativeAfterUsd,
     lrsUsdRemaining,
     commissionSlabGapUsd,
+    credAmountPaid,
+    credCashback,
   });
 }
 
@@ -266,6 +280,15 @@ function renderResult(r) {
     row("Total amount payable", formatINR(r.totalPayable), { subtotal: true }),
   ];
 
+  if (r.credAmountPaid > 0) {
+    rows.push(
+      row("CRED CashBack", "", { section: true }),
+      row("Amount paid to CRED", formatINR(r.credAmountPaid)),
+      row("Amount of Currency Exchanged (ACE)", formatINR(r.ace)),
+      row("CRED CashBack (amount paid to CRED − ACE)", formatINR(r.credCashback), { subtotal: true })
+    );
+  }
+
   document.getElementById("breakdownBody").innerHTML = rows.join("");
 
   const note = document.getElementById("thresholdNote");
@@ -307,6 +330,7 @@ const INPUT_IDS = [
   "panStatus",
   "priorLrs",
   "correspondentCharge",
+  "credAmountPaid",
 ];
 
 const STEPPER_DECIMALS = {
@@ -314,7 +338,20 @@ const STEPPER_DECIMALS = {
   baseRate: 4,
   markup: 4,
   priorLrs: 0,
+  credAmountPaid: 2,
 };
+
+// Text-based amount fields (₹) that display Indian comma-grouped thousands,
+// e.g. "48,320.00" or "10,00,000" — these use type="text" rather than
+// type="number" since browsers reject comma characters in a number input.
+const COMMA_GROUPED_IDS = new Set(["priorLrs", "credAmountPaid"]);
+
+function groupThousands(value, decimals) {
+  return value.toLocaleString("en-IN", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   populateCurrencies();
@@ -337,7 +374,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const checked = priorLrsOverThreshold.checked;
     if (checked) {
       priorLrsBeforeTick = priorLrsInput.value;
-      priorLrsInput.value = LRS_TCS_THRESHOLD;
+      priorLrsInput.value = groupThousands(LRS_TCS_THRESHOLD, 0);
     } else {
       priorLrsInput.value = priorLrsBeforeTick;
     }
@@ -347,17 +384,18 @@ document.addEventListener("DOMContentLoaded", () => {
   Object.keys(STEPPER_DECIMALS).forEach((id) => {
     const el = document.getElementById(id);
     const decimals = STEPPER_DECIMALS[id];
+    const grouped = COMMA_GROUPED_IDS.has(id);
     const reformat = () => {
-      const value = parseFloat(el.value);
-      if (!isNaN(value)) el.value = value.toFixed(decimals);
+      const value = parseNum(el.value);
+      if (!isNaN(value)) el.value = grouped ? groupThousands(value, decimals) : value.toFixed(decimals);
     };
     const step = (dir) => {
       const stepSize = parseFloat(el.step) || 1;
-      const current = parseFloat(el.value) || 0;
+      const current = parseNum(el.value) || 0;
       const next = dir === "up" ? current + stepSize : current - stepSize;
       const min = parseFloat(el.min);
       const clamped = !isNaN(min) && next < min ? min : next;
-      el.value = clamped.toFixed(decimals);
+      el.value = grouped ? groupThousands(clamped, decimals) : clamped.toFixed(decimals);
       el.dispatchEvent(new Event("input", { bubbles: true }));
     };
     el.addEventListener("blur", reformat);

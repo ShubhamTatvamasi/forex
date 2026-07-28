@@ -264,7 +264,7 @@
         <div class="field field-prior">
           <label for="priorLrs">LRS remittances already made this FY (₹)</label>
           <div class="stepper">
-            <input type="number" id="priorLrs" min="0" step="1000" value="0" />
+            <input type="text" inputmode="decimal" id="priorLrs" min="0" step="1000" value="0" />
             <div class="stepper-buttons">
               <button type="button" class="stepper-btn" data-step-target="priorLrs" data-step-dir="up" aria-label="Increase prior LRS amount">▲</button>
               <button type="button" class="stepper-btn" data-step-target="priorLrs" data-step-dir="down" aria-label="Decrease prior LRS amount">▼</button>
@@ -291,6 +291,17 @@
           </select>
           <p class="hint" id="correspondentChargeHint"></p>
           <p class="recommendation" id="fullValueRecommendation" hidden></p>
+        </div>
+        <div class="field field-credpaid">
+          <label for="credAmountPaid">Amount paid to CRED (₹)</label>
+          <div class="stepper">
+            <input type="text" inputmode="decimal" id="credAmountPaid" min="0" step="0.01" value="48320" />
+            <div class="stepper-buttons">
+              <button type="button" class="stepper-btn" data-step-target="credAmountPaid" data-step-dir="up" aria-label="Increase amount paid to CRED">▲</button>
+              <button type="button" class="stepper-btn" data-step-target="credAmountPaid" data-step-dir="down" aria-label="Decrease amount paid to CRED">▼</button>
+            </div>
+          </div>
+          <p class="hint">CRED debits a buffer amount upfront to absorb forex rate fluctuations between order placement and settlement — this is typically more than the final Amount of Currency Exchanged (ACE). Enter the actual amount debited by CRED here; leave as 0 if not applicable. The excess over ACE is later refunded as CRED Cash and shown as a line item in the Breakdown below.</p>
         </div>
       </div>
 
