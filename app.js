@@ -52,6 +52,9 @@ function populateCurrencies() {
 // where e.g. 43.425 is stored as 43.42499999... and rounds down instead of up.
 // The tiny fixed nudge pushes true .xx5 boundary values over before rounding,
 // without affecting any value that isn't already essentially at that boundary.
+// Confirmed against an actual trade (see index.html "How this is calculated"):
+// a value of supply of ₹482.50 gives CGST/SGST raw of exactly 43.425, and the
+// bank charged ₹43.43 — i.e. rounded up, not to even (which would be ₹43.42).
 function roundHalfUp2(amount) {
   return Math.round(amount * 100 + 1e-9) / 100;
 }
