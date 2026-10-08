@@ -22,7 +22,15 @@ const pages = [
 <Base title={title} description={description}>
   <div class="dshell">
     <header class="topnav">
-      <a class="brand" href={base}><span class="brand-mark">₹</span><span>RemitNow Forex</span></a>
+      <a class="brand" href={base}>
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9h13M13 5l4 4-4 4" />
+            <path d="M20 15H7M11 11l-4 4 4 4" />
+          </svg>
+        </span>
+        <span>RemitNow Forex</span>
+      </a>
       <nav class="nav-links" aria-label="Guides">
         {pages.map((p) => (
           <a href={p.href} class:list={[{ current: path === p.href }]} aria-current={path === p.href ? 'page' : undefined}>

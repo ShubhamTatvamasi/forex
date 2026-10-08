@@ -9,7 +9,15 @@
 
 <div class="shell">
   <header class="topnav">
-    <a class="brand" href={BASE}><span class="brand-mark">₹</span><span>RemitNow Forex</span></a>
+    <a class="brand" href={BASE}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 9h13M13 5l4 4-4 4" />
+          <path d="M20 15H7M11 11l-4 4 4 4" />
+        </svg>
+      </span>
+      <span>RemitNow Forex</span>
+    </a>
     <nav class="nav-links" aria-label="Guides">
       <a href={`${BASE}method/`}><Icon name="exchange" size={17} />How it's calculated</a>
       <a href={`${BASE}links/`}><Icon name="external" size={17} />Useful links</a>
