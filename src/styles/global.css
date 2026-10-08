@@ -275,7 +275,7 @@ select {
 .callout.accent .icon { color: var(--accent); }
 
 /* ---------- tables ---------- */
-.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); overflow: auto; max-height: min(70vh, 720px); }
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
 table.data { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--fs-table); }
 table.data th {
   position: sticky; top: 0; z-index: 1; background: var(--surface-sunken);
@@ -296,7 +296,7 @@ table.data .sym { font-weight: 600; }
 .table-caption p { color: var(--text-2); font-size: var(--fs-ui); margin-top: 2px; }
 
 /* ---------- shared shell bits ---------- */
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -0.02em; white-space: nowrap; }
 .brand-mark {
   width: 34px; height: 34px; border-radius: 10px; color: #fff; display: grid; place-items: center;
   font-size: 17px; font-weight: 700;
@@ -390,7 +390,6 @@ table.data .sym { font-weight: 600; }
 .doc .lead { font-size: 1.0625rem; max-width: 64ch; }
 .doc .sec-lead { max-width: 64ch; margin-bottom: 18px; }
 .doc code { background: var(--surface-sunken); padding: 1px 6px; border-radius: var(--r-xs); }
-.doc .table-wrap { max-height: none; }
 .h-num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 14px; font-weight: 600; flex: none; }
 .h-icon { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); flex: none; }
 .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
