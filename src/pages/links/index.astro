@@ -1,0 +1,53 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import Icon from '../../components/Icon.astro';
+
+const links = [
+  {
+    href: 'https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/personal-banking/discover-products/interest-rates/hdfc-bank-treasury-forex-card-rates.pdf',
+    label: 'HDFC Bank Treasury Forex Card Rates (PDF)',
+    hint: 'The live daily rate sheet, published by HDFC Bank. Use the "T.T. Selling (O/w Rem)" column for your currency as the base rate for outward remittances — it updates daily and is the actual card rate applied at debit, not just an indicative mid-market rate.',
+  },
+  {
+    href: 'https://www.hdfc.bank.in/remitnow',
+    label: 'HDFC Bank RemitNow',
+    hint: "Official product page for HDFC's outward remittance service that this calculator is modelled on.",
+  },
+  {
+    href: 'https://www.fxretail.co.in',
+    label: 'FX Retail (Clearcorp)',
+    hint: 'RBI-backed platform for booking retail forex deals (SPOT/TOM/CASH/FORWARD) directly with your relationship bank at market-driven rates.',
+  },
+  {
+    href: 'https://www.bharat-connect.com/forex/',
+    label: 'Bharat Connect Forex (BBPS)',
+    hint: 'FX Retail integration via Bharat Connect — USD-only, capped at USD 10,000 per remittance/forex-card transaction and USD 3,000 for physical currency, within the overall USD 2,50,000/FY LRS limit. Resident individuals only; bookable Mon–Fri, 9:15 AM–3:30 PM.',
+  },
+  {
+    href: 'https://www.hdfc.bank.in/content/dam/hdfcbankpws/in/en/pdf/forms-centre/retail-trade-and-forex-(rtfx)/List%20of%20Purpose%20Codes%20-%20Outward%20Remittance%20-%20Forex%20Sale.pdf',
+    label: 'RBI List of Purpose Codes — Outward Remittance (PDF)',
+    hint: "The full official RBI purpose code list for outward remittance/forex sale transactions, published by HDFC Bank. Use this to find the exact code for purposes not covered by the options in this calculator's dropdown.",
+  },
+];
+---
+<Docs
+  title="Useful Links · RemitNow Forex Calculator"
+  description="Official rate sheets, purpose-code lists and booking platforms referenced by the RemitNow forex charges calculator."
+  crumb="Useful links"
+>
+  <section id="links">
+    <ul class="links-list">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}<Icon name="external" size={14} /></a>
+          <p class="hint">{l.hint}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Docs>
+
+<style>
+  .links-list a { display: inline-flex; align-items: center; gap: 6px; }
+  .links-list a :global(.icon) { color: var(--text-3); }
+</style>

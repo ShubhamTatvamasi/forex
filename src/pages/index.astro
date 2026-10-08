@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import App from '../components/App.svelte';
+---
+<Base title="RemitNow Forex Charges Calculator">
+  <App client:only="svelte" />
+  <noscript><p style="padding:24px">This calculator runs entirely in your browser and needs JavaScript.</p></noscript>
+</Base>

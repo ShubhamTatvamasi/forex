@@ -1,0 +1,17 @@
+---
+import Docs from '../layouts/Docs.astro';
+import Icon from '../components/Icon.astro';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+<Docs title="Page not found · RemitNow Forex Calculator" crumb="Not found" description="The link may be old. Everything lives in two places:">
+  <div class="glance">
+    <a class="glance-card nf" href={base}><Icon name="gauge" /><b>The calculator</b><span>Estimate remittance charges</span></a>
+    <a class="glance-card nf" href={`${base}method/`}><Icon name="exchange" /><b>How it's calculated</b><span>Rules, slabs and thresholds</span></a>
+  </div>
+  <style>
+    .nf { text-decoration: none; transition: border-color var(--dur-1); }
+    .nf:hover { border-color: var(--accent-line); }
+    .nf .icon { color: var(--accent); }
+    .nf b { font-size: var(--fs-body); }
+  </style>
+</Docs>

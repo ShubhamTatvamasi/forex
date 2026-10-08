@@ -1,0 +1,120 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import Icon from '../../components/Icon.astro';
+
+const toc = [
+  { id: 'rate', label: 'Effective rate & ACE' },
+  { id: 'commission', label: 'Commission' },
+  { id: 'gst', label: 'GST on ACE' },
+  { id: 'tcs', label: 'TCS under LRS' },
+  { id: 'correspondent', label: 'Correspondent charges' },
+  { id: 'lrs', label: 'LRS annual limit' },
+  { id: 'slab', label: 'Commission slab' },
+];
+---
+<Docs
+  title="How It's Calculated · RemitNow Forex Calculator"
+  description="The rules and slabs behind every figure in the RemitNow forex charges calculator."
+  crumb="How it's calculated"
+  toc={toc}
+>
+  <div class="glance">
+    <div class="glance-card"><b>₹500 / ₹1,000</b><span>Flat commission, up to or above USD 500</span></div>
+    <div class="glance-card"><b>18%</b><span>GST (9% CGST + 9% SGST) on commission and value of supply</span></div>
+    <div class="glance-card"><b>₹10,00,000</b><span>Per-FY LRS threshold before TCS applies</span></div>
+    <div class="glance-card"><b>$2,50,000</b><span>Hard LRS annual cap per individual</span></div>
+  </div>
+
+  <section id="rate">
+    <h2><span class="h-icon"><Icon name="exchange" size={18} /></span>Effective rate &amp; ACE</h2>
+    <div class="rule-list">
+      <div class="rule"><Icon name="trend" /><div><b>Effective rate</b><p>Base rate + markup (₹ per unit of currency). This is the rate actually applied, versus the interbank/mid-market rate you enter — confirmed against an actual FX-Retail trade: ₹96.30/USD plus a ₹0.20 markup gave a final price of ₹96.50/USD.</p></div></div>
+      <div class="rule"><Icon name="coins" /><div><b>ACE (Amount of Currency Exchanged)</b><p>Foreign currency amount × effective rate. This is the INR value of the currency being bought, and the base on which GST slabs are computed.</p></div></div>
+    </div>
+  </section>
+
+  <section id="commission">
+    <h2><span class="h-icon"><Icon name="receipt" size={18} /></span>Commission</h2>
+    <div class="rule-list">
+      <div class="rule"><Icon name="receipt" /><div><b>Flat fee, not a percentage</b><p>₹500 for remittances up to USD 500 (or equivalent), or ₹1,000 above that, plus 18% GST on the commission. Confirmed against an actual FX-Retail/CRED trade: a USD 500 purchase was charged a flat ₹500 commission, with ₹45 CGST + ₹45 SGST on top.</p></div></div>
+    </div>
+  </section>
+
+  <section id="gst">
+    <h2><span class="h-icon"><Icon name="file-table" size={18} /></span>GST on ACE</h2>
+    <p class="sec-lead">GST on ACE follows CGST Rule 32(2)(b), which taxes a "value of supply" slab rather than the full ACE.</p>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>ACE</th><th>Value of supply</th><th>GST (18%)</th></tr></thead>
+        <tbody>
+          <tr><td>Up to ₹1,00,000</td><td>1% of ACE, minimum ₹250</td><td>0.18% of ACE (min ₹45, max ₹180)</td></tr>
+          <tr><td>₹1,00,001–₹10,00,000</td><td>₹1,000 + 0.5% of ACE above ₹1,00,000</td><td>₹180 + 0.09% of ACE (max ₹990)</td></tr>
+          <tr><td>Above ₹10,00,000</td><td>₹5,500 + 0.1% of ACE above ₹10,00,000, capped at ₹60,000</td><td>₹990 + 0.018% of ACE (max ₹10,800)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <Icon name="info" />
+      <div>
+        <b>The value of supply is not a fee you are charged</b>
+        <p>It never appears as a debit on its own. It is a notional figure GST law uses purely as the tax base, so that GST isn't calculated on the entire ACE (which would make the tax bill roughly 100× larger). The only real debit from this slab is the GST on it (CGST + SGST). This rule is the same across all banks and forex platforms.</p>
+      </div>
+    </div>
+    <div class="callout warn">
+      <Icon name="warn" />
+      <div>
+        <b>Rounding</b>
+        <p>CGST and SGST are each rounded to the nearest paisa (rounding a .5 up, e.g. ₹43.425 → ₹43.43). Depending on the exact rate and amount, the raw pre-rounding value can land within a fraction of a paisa of a boundary, so totals may occasionally differ from your bank statement by ₹0.01–0.02. This is expected paisa-level rounding noise, not a calculation error.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tcs">
+    <h2><span class="h-icon"><Icon name="shield" size={18} /></span>TCS under LRS</h2>
+    <p class="sec-lead">Tax Collected at Source, applied to cumulative remittances in the financial year (post Budget 2025 rates, effective 1 Apr 2025).</p>
+    <div class="rule-list">
+      <div class="rule"><Icon name="check-circle" /><div><b>Education funded by a specified loan [S0305]</b><p>0%, no threshold.</p></div></div>
+      <div class="rule"><Icon name="coins" /><div><b>Education (self-funded) [S0305] / medical treatment [S0304]</b><p>Nil up to ₹10 lakh, 2% above with an operative/Aadhaar-linked PAN, or 5% above if your PAN is inoperative.</p></div></div>
+      <div class="rule"><Icon name="receipt" /><div><b>All other purposes</b><p>Travel [S0306], gifts/donations [S1302], investments [S0001/S0002], family maintenance [S1301], etc.: nil up to ₹10 lakh, 20% above, regardless of PAN status.</p></div></div>
+      <div class="rule"><Icon name="info" /><div><b>TCS is recoverable</b><p>It is not a bank charge — it is deposited with the government against your PAN and can be claimed as a credit or refund when filing your income tax return.</p></div></div>
+    </div>
+  </section>
+
+  <section id="correspondent">
+    <h2><span class="h-icon"><Icon name="globe" size={18} /></span>Correspondent bank charges</h2>
+    <p class="sec-lead">Outward remittances are routed through correspondent/intermediary banks abroad, who may levy their own processing charge — separate from and in addition to RemitNow's commission.</p>
+    <div class="rule-list">
+      <div class="rule"><Icon name="arrow-right" /><div><b>Self</b><p>Borne by you (the remitter), charged separately after the transaction is successfully processed.</p></div></div>
+      <div class="rule"><Icon name="arrow-left" /><div><b>Beneficiary</b><p>Borne by the recipient; deducted from the remittance amount, so they receive less than the amount sent.</p></div></div>
+      <div class="rule"><Icon name="check-circle" /><div><b>Full Value</b><p>No correspondent bank charge is levied at all. Available only for remittances in USD, EUR or GBP, to any destination, for all personal purposes offered under RemitNow.</p></div></div>
+    </div>
+    <div class="callout success">
+      <Icon name="check-circle" />
+      <div>
+        <b>Recommendation</b>
+        <p>Whenever your remittance currency is USD, EUR or GBP, always choose Full Value — it is strictly better than the other two options since it guarantees zero correspondent bank charges, for you or the beneficiary, at no extra cost.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="lrs">
+    <h2><span class="h-icon"><Icon name="gauge" size={18} /></span>LRS annual limit</h2>
+    <div class="rule-list">
+      <div class="rule"><Icon name="gauge" /><div><b>USD 2,50,000 per financial year</b><p>Separate from the ₹10,00,000 TCS threshold, the Liberalised Remittance Scheme caps total outward remittances at USD 2,50,000 per financial year, per individual — a hard regulatory limit, not just a tax trigger. The calculator estimates your cumulative USD total using the indicative USD/INR rate and warns as you approach or exceed it.</p></div></div>
+    </div>
+  </section>
+
+  <section id="slab">
+    <h2><span class="h-icon"><Icon name="receipt" size={18} /></span>Commission slab boundary</h2>
+    <div class="rule-list">
+      <div class="rule"><Icon name="info" /><div><b>Just above $500</b><p>For USD remittances just above the $500 commission slab, the commission jumps from ₹500 to ₹1,000. If your amount is flexible and only slightly over $500, staying at or under it halves the commission.</p></div></div>
+    </div>
+    <div class="callout">
+      <Icon name="clock" />
+      <div>
+        <b>Bookable hours</b>
+        <p>Forex rates on RemitNow/FX-Retail style platforms are typically only bookable Monday–Friday during market hours (broadly 9:15 AM–3:30 PM IST). Outside this window, treat any rate you enter here as indicative only, not a bookable live rate.</p>
+      </div>
+    </div>
+  </section>
+</Docs>

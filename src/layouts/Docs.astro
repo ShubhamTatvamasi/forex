@@ -1,0 +1,139 @@
+---
+import Base from './Base.astro';
+import Icon from '../components/Icon.astro';
+import { THEME_OPTIONS } from '../lib/ui/theme';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Short label shown in the hero. */
+  crumb: string;
+  /** Section anchors for the "On this page" list. */
+  toc?: { id: string; label: string }[];
+}
+const { title, description, crumb, toc = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const pages = [
+  { href: `${base}method/`, label: 'How it’s calculated', icon: 'exchange' },
+  { href: `${base}links/`, label: 'Useful links', icon: 'external' },
+];
+---
+<Base title={title} description={description}>
+  <div class="dshell">
+    <header class="topnav">
+      <a class="brand" href={base}><span class="brand-mark">₹</span><span>RemitNow Forex</span></a>
+      <nav class="nav-links" aria-label="Guides">
+        {pages.map((p) => (
+          <a href={p.href} class:list={[{ current: path === p.href }]} aria-current={path === p.href ? 'page' : undefined}>
+            <Icon name={p.icon} size={17} />{p.label}
+          </a>
+        ))}
+      </nav>
+      <div class="nav-right">
+        <a class="btn primary sm" href={base}><Icon name="gauge" size={16} />Open the calculator</a>
+        <div class="theme-menu" data-theme-menu>
+          <button class="btn ghost sm theme-trigger" aria-haspopup="menu" aria-expanded="false" data-theme-trigger>
+            {THEME_OPTIONS.map((o) => (
+              <span class="t-icon" data-theme-icon={o.value} hidden><Icon name={o.icon} size={16} /></span>
+            ))}
+            <span class="hide-sm" data-theme-label>System</span>
+            <Icon name="chevron-down" size={14} />
+          </button>
+          <div class="theme-pop" role="menu" aria-label="Theme" hidden>
+            {THEME_OPTIONS.map((o) => (
+              <button role="menuitemradio" aria-checked="false" data-theme-set={o.value}>
+                <Icon name={o.icon} size={16} /><span>{o.label}</span>
+                <span class="tick" data-theme-tick={o.value}><Icon name="check" size={15} /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="hero-band">
+      <div class="hero-inner">
+        <span class="badge"><Icon name="book" size={14} />{crumb}</span>
+        <h1>{crumb}</h1>
+        <p class="lead">{description}</p>
+      </div>
+    </div>
+
+    <div class="dmain">
+      <div class="dbody">
+        <article class="doc">
+          <slot />
+          <footer class="doc-foot">
+            <Icon name="info" size={16} />
+            <p>An independent educational estimator, not an official HDFC Bank tool. Confirm current charges with your bank before remitting.</p>
+          </footer>
+        </article>
+        {toc.length > 0 && (
+          <nav class="toc" aria-label="On this page">
+            <p class="overline">On this page</p>
+            <ul>{toc.map((t) => <li><a href={`#${t.id}`} data-toc={t.id}>{t.label}</a></li>)}</ul>
+          </nav>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { applyTheme, savedTheme, THEME_OPTIONS, type ThemeChoice } from '../lib/ui/theme';
+    const menu = document.querySelector<HTMLElement>('[data-theme-menu]');
+    const trigger = menu?.querySelector<HTMLButtonElement>('[data-theme-trigger]');
+    const pop = menu?.querySelector<HTMLElement>('.theme-pop');
+    const label = menu?.querySelector<HTMLElement>('[data-theme-label]');
+    const icons = [...(menu?.querySelectorAll<HTMLElement>('[data-theme-icon]') ?? [])];
+    const items = [...(menu?.querySelectorAll<HTMLButtonElement>('[data-theme-set]') ?? [])];
+    const ticks = [...(menu?.querySelectorAll<HTMLElement>('[data-theme-tick]') ?? [])];
+
+    const markTheme = (t: ThemeChoice) => {
+      const opt = THEME_OPTIONS.find((o) => o.value === t) ?? THEME_OPTIONS[0];
+      if (label) label.textContent = opt.label;
+      icons.forEach((el) => (el.hidden = el.dataset.themeIcon !== t));
+      items.forEach((b) => {
+        const on = b.dataset.themeSet === t;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-checked', String(on));
+      });
+      ticks.forEach((el) => (el.hidden = el.dataset.themeTick !== t));
+    };
+    const setOpen = (v: boolean) => {
+      if (!pop || !trigger) return;
+      pop.hidden = !v;
+      trigger.setAttribute('aria-expanded', String(v));
+    };
+    markTheme(savedTheme());
+    trigger?.addEventListener('click', () => setOpen(trigger.getAttribute('aria-expanded') !== 'true'));
+    items.forEach((b) =>
+      b.addEventListener('click', () => {
+        const t = b.dataset.themeSet as ThemeChoice;
+        applyTheme(t);
+        markTheme(t);
+        setOpen(false);
+      }),
+    );
+    document.addEventListener('click', (e) => {
+      if (menu && !menu.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    if (links.length) {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            links.forEach((a) => a.classList.toggle('active', a.dataset.toc === e.target.id));
+          }
+        },
+        { rootMargin: '-88px 0px -70% 0px' },
+      );
+      document.querySelectorAll('.doc section[id]').forEach((s) => obs.observe(s));
+    }
+  </script>
+</Base>
